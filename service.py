@@ -9,10 +9,11 @@ import os
 import numpy as np
 import pandas as pd
 import uvicorn
-from fastapi import FastAPI
+from fastapi import FastAPI, Body
 from transformers import AutoTokenizer, AutoModelForSequenceClassification, TextClassificationPipeline
 
 from consts import HF_MODEL_ID, CLASSES_PATH
+
 
 logging.config.fileConfig('logging.conf')
 log = logging.getLogger('services.dialog')
@@ -48,10 +49,15 @@ def read_root():
     return "OK"
 
 
+@app.post("/classify")
+def read_root(text: str = Body(...)):
+    return get_model_predictions([text])
+    
 @app.get("/classify")
 def read_root(text: str):
     return get_model_predictions([text])
 
 
 if __name__ == '__main__':
-    uvicorn.run(app, host="0.0.0.0", port=8040)
+#    uvicorn.run(app, host="0.0.0.0", port=8040)
+    uvicorn.run(app, host="0.0.0.0", port=8030)
